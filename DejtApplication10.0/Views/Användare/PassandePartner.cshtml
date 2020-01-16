@@ -1,0 +1,63 @@
+﻿@using DejtApplication10._0.Models
+@model DejtApplication10._0.Models.AnvändareIndexViewModel
+
+@{
+    ViewBag.Title = "PassandePartner";
+}
+
+
+<h2>Dina matchningar</h2>
+@if (@Model.Användare.Count() > 0)
+{
+    <div class="container-fluid projects padding-top-small">
+        <div class="row">
+            @{
+                int antal = 0;
+
+            }
+
+            @foreach (var användare in @Model.Användare)
+            {
+                // jämnför åldern med inloggade användaren och användaren i listan med alla användare
+                int resultat = Int32.Parse(@AnvändareInloggadVerifeierare.användaren.getÅlder()) - Int32.Parse(användare.getÅlder());
+                // Om man är 2 år yngre till 2 år äldre = match
+                if (resultat >= -2 && resultat <= 2)
+                {
+                    antal++;
+                    <div class="col-sm-6 col-md-3">
+                        <div class="start-inner">
+
+                            <img src="" alt="">
+                            <div class="start-caption">
+                                <div class="start-details">
+                                    <p><i class="fa fa-plus fa-lg"></i></p>
+
+
+                                    @if (användare.Profilbild != null)
+                                    {
+                                        var base64 = Convert.ToBase64String(användare.Profilbild);
+                                        var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                                        <a href='@Url.Action("AnotherUserPage", "Användare", new { username = användare.AnvändarNamn })'>
+                                            <img src='@imgsrc'
+                                                 style="max-width:100px;max-height:100px" id="pic" />
+                                        </a>
+                                    }
+                                    <p id="profil">@användare.Förnamn @användare.Efternamn</p>
+                                    <p>@användare.getÅlder() år</p>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                }
+            }
+
+            <h3 id="PassandepartnerRubrik">Du matchar med @antal person/personer</h3>
+
+        </div>
+    </div>
+}
+
+

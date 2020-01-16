@@ -1,0 +1,47 @@
+﻿@using DejtApplication10._0.Models
+@model DejtApplication10._0.Models.AnvändareModel
+@{
+    ViewBag.Title = "Vännförfrågningar";
+    var ctx = new AnvändareDbContext();
+}
+<h1> Här visas dina vännförfrågningar</h1>
+
+<div class="container-fluid projects padding-top-small">
+    <div class="row">
+        @foreach (var vännförfrågan in AnvändareInloggadVerifeierare.användaren.vännFörFrågningar)
+        {
+            foreach (var användare in ctx.användare)
+            {
+
+                if (användare.ID == vännförfrågan.FörFråganIfrånID) // loopar igenom och tar fram vänförfrågningar
+                {
+                    {
+                        <div class="col-sm-6 col-md-3">
+                            <div class="start-inner">
+
+                                <img src="" alt="">
+                                <div class="start-caption">
+                                    <div class="start-details">
+                                        <p><i class="fa fa-plus fa-lg"></i></p>
+                                        @if (användare.Profilbild != null)
+                                        {
+                                            var base64 = Convert.ToBase64String(användare.Profilbild);
+                                            var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                                            <img src='@imgsrc'
+                                                 style="max-width:100px;max-height:100px" id="pic" />
+                                        }
+                                        <p id="profil"> @användare.Förnamn @användare.Efternamn </p>
+                                        <p>  @Html.ActionLink("Lägg till " + användare.Förnamn, "AccepteraVänn", "Användare", new { VännAttLäggaTill = vännförfrågan.FörFråganIfrånID, vännFörfrågansID =vännförfrågan.FörFrågningsID },  new { onclick = "return confirm('Är du säker på att du vill lägga till " + användare.Förnamn +" "+ användare.Efternamn + " som vänn');" })</p>
+                                        <p>  @Html.ActionLink("Avvisa " + användare.Förnamn, "TaBortVännförfrågan", "Användare", new { FörfrågningsID = vännförfrågan.FörFrågningsID  },new { onclick = "return confirm('Är du säker på att du vill ta bort vännförfrågan?');" } )</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        }
+        </div>
+</div>
+

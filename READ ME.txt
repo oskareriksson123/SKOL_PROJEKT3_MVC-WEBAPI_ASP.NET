@@ -1,0 +1,14 @@
+
+
+
+INLOGG till de redan existerande kontonen som finns!
+.
+Konto1 = robin robin
+Konto2 = mathias mathias
+Konto3 = oskar oskar
+.
+På det personliga sidorna finns en flik som man kan hålla musen på så kommer fuktionerna ----> spara till xml som sparas på C:/logs ---->
+funktionen inaktivera konto finns också där!
+.
+Om man går in på en annan person profil så finns funktionen matchar vi under samma flik. Resterande funktioner är lätta att hitta. 
+.

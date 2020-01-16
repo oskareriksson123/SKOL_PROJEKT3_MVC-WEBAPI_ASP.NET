@@ -1,0 +1,66 @@
+﻿@model DejtApplication10._0.Models.AnvändareModel
+@using DejtApplication10._0.Models;
+@ViewBag.ID;
+
+
+@{
+    ViewBag.Title = "Bekräftelse";
+ 
+}
+
+
+
+<h2>Registrering genomförd!</h2>
+
+<div>
+
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Förnamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Förnamn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Efternamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Efternamn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnvändarNamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnvändarNamn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Epost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Epost)
+        </dd>
+
+        @{
+            if (Model.Profilbild != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Profilbild);
+                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                <img src='@imgsrc'
+                     style="max-width:100px;max-height:100px" />
+            }
+        }
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Logga In", "Login", "Användare", routeValues: null, htmlAttributes: new { id = "loginLink" })
+</p>

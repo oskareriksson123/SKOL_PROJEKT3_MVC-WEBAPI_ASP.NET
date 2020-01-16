@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNet.Identity
+@using DejtApplication10._0.Models
+
+
+<ul class="nav navbar-nav navbar-right">
+
+    @* IF - sattserna kontrollerar så att användaren är inloggad Och om kontot som är inloggat är aktiverat elller av aktiverat*@
+    @if (AnvändareInloggadVerifeierare.isInloogad == true && AnvändareInloggadVerifeierare.användaren.IsActive == true)
+    {
+        <li>
+            @Html.ActionLink("Hej " + AnvändareInloggadVerifeierare.användaren.AnvändarNamn, "UserPage", "Användare", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li>
+            @Html.ActionLink("Hitta vänner", "sök", "Användare", routeValues: null, htmlAttributes: new { id = "Sök" })
+        </li>
+
+        <li>
+            @Html.ActionLink("Hitta passande partner", "PassandePartner", "Användare", routeValues: null, htmlAttributes: new { id = "PassandePartner" })
+        </li>
+
+
+        <li>
+            @Html.ActionLink("Logga ut", "LoggaUt", "Användare", routeValues: null, htmlAttributes: new { id = "LoggaUtLink" })
+        </li>
+        <li>
+            @Html.ActionLink(AnvändareInloggadVerifeierare.användaren.getAntalVännförFrågningar(), "seVännförfrågningar", "Användare", routeValues: null, htmlAttributes: new { id = "vännförfrågningar" })
+        </li>
+    }
+
+    else if (AnvändareInloggadVerifeierare.isInloogad == true && AnvändareInloggadVerifeierare.användaren.IsActive == false)
+    {
+        <li>
+            @Html.ActionLink("Hej " + AnvändareInloggadVerifeierare.användaren.AnvändarNamn + " Ditt konto är inaktiverat! Aktivera ditt konto igen föt att komma igång", "InaktiveraAnvändare", "Användare")
+        </li>
+        <li>
+            @Html.ActionLink("Logga ut", "LoggaUt", "Användare", routeValues: null, htmlAttributes: new { id = "LoggaUtLink" })
+        </li>
+
+    }
+    else
+    {
+        <li> @Html.ActionLink("Registrera dig", "Register", "Användare", routeValues: null, htmlAttributes: new { id = "registerLink" }) </li>
+        <li> @Html.ActionLink("Logga In", "Login", "Användare", routeValues: null, htmlAttributes: new { id = "loginLink" }) </li>
+    }
+</ul>

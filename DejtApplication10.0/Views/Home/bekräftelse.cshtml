@@ -1,0 +1,52 @@
+﻿@model DejtApplication10._0.Models.AnvändareModel
+
+@{
+    ViewBag.Title = "bekräftelse";
+}
+
+<h2>Registrering genomförd!</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Förnamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Förnamn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Efternamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Efternamn)
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnvändarNamn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnvändarNamn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Epost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Epost)
+        </dd>
+
+        
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Logga in", "Login")
+</p>

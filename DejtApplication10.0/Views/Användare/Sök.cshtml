@@ -1,0 +1,92 @@
+﻿@using DejtApplication10._0.Models
+@*@using (Html.BeginForm("Sök", "Användare", FormMethod.Post))*@
+
+@model MainViewModel
+
+@{
+    ViewBag.Title = "Sök";
+}
+
+<h1>Sök efter medlemar</h1>
+<h3>Här hittar du medlemar</h3>
+<br />
+@using (Html.BeginForm())
+{
+    <p>Skriv in för och/eller efternamn!</p>
+    @Html.TextBox("id");
+    <br />
+    <br />
+    <input id="SökKnapp" type="submit" value="sök" />
+
+}
+
+@if (@Model.allaAnvändare.Användare.Count()> 0)
+{
+
+    <br />
+    <div class="container-fluid projects padding-top-small">
+
+            <p> Du fick @Model.allaAnvändare.Användare.Count().ToString() träffar! </p>
+        
+        <div class="row">
+
+            @foreach (var användare in @Model.allaAnvändare.Användare)
+            {
+                if (användare.IsActive)
+                {
+                    <div class="col-sm-6 col-md-3">
+                        <div class="start-inner">
+
+                            <img src="" alt="">
+                            <div class="start-caption">
+                                <div class="start-details">
+                                    <p><i class="fa fa-plus fa-lg"></i></p>
+
+
+                                    @if (användare.Profilbild != null)
+                                    {
+                                        var base64 = Convert.ToBase64String(användare.Profilbild);
+                                        var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                                        <a href='@Url.Action("AnotherUserPage", "Användare", new { username = användare.AnvändarNamn })'>
+                                            <img src='@imgsrc'
+                                                 style="max-width:100px;max-height:100px" id="pic" />
+                                        </a>
+                                    }
+                                    <p id="profil">@användare.Förnamn @användare.Efternamn</p>
+                                    <p>@användare.getÅlder() år</p>
+                                </div>
+                            </div>
+
+                            @{
+
+
+                                if (användare.vännFörFrågningar.Any(x => x.FörFråganIfrånID == AnvändareInloggadVerifeierare.användaren.ID))
+                                {
+                                    <p>Du har redan skickat en vännförfrågan till denna användare</p>
+                                }
+
+                                else if (AnvändareInloggadVerifeierare.användaren.vännFörFrågningar.Any(x => x.FörFråganIfrånID == användare.ID))
+                                {
+                                    <p> Du har en vännförfrågan ifrån denna person</p>
+                                }
+                                else if(Model.allaVänner.Any(x => x.VännensID == användare.ID && x.Username == användare.AnvändarNamn && x.TillHörUser == AnvändareInloggadVerifeierare.användaren.AnvändarNamn))
+                                {
+                                    <p> Ni är redan vänner</p>
+                                }
+
+                                else
+                                {
+                                    @Html.ActionLink(" Lägg till som vänn ", "AddVänn", "Användare", new { Användarnamn = användare.AnvändarNamn }, null);
+                                }
+                            }
+
+                        </div>
+                    </div>
+                }
+            }
+
+
+        </div>
+    </div>
+}
+

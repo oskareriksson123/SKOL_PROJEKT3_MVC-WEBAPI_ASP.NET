@@ -1,0 +1,23 @@
+﻿@using DejtApplication10._0.Models;
+
+@{
+    AnvändareDbContext db = new AnvändareDbContext();
+}  
+
+  @foreach (var användare in db.användare)
+  {
+
+
+      if (användare.Profilbild != null)
+      {
+          var base64 = Convert.ToBase64String(användare.Profilbild);
+          var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+          <img src ='@imgsrc' 
+        style = "max-width:100px;max-height:100px" />
+
+
+
+
+      }
+  }
+

@@ -1,0 +1,78 @@
+﻿@using DejtApplication10._0.Models
+@model AnvändareIndexViewModel
+
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+
+<h1 id="H">Välkommen till ORU-DATEING</h1>
+<h3 id="H"> Hitta din livspartner här!</h3>
+@*När programmet körs så reurnerar den 3 användare som finns (ifall de finns) sedan presenteras de + profilbilden*@
+<br />
+<div class="container-fluid projects padding-top-small">
+    <div class="row">
+        @foreach (var användare in @Model.Användare)
+        {
+            <div class="col-sm-6 col-md-3">
+                <div class="start-inner">
+
+                    <img src="" alt="">
+                    <div class="start-caption">
+                        <div class="start-details">
+                            <p><i class="fa fa-plus fa-lg"></i></p>
+
+                            @if (användare.Profilbild != null && AnvändareInloggadVerifeierare.isInloogad == false)
+                            {
+                                var base64 = Convert.ToBase64String(användare.Profilbild);
+                                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+
+                                <a href='@Url.Action("Register", "Användare")'>
+                                    <img src='@imgsrc'
+                                         style="max-width:100px;max-height:100px" id="pic" />
+                                </a>
+                                <p id="profil">@användare.Förnamn @användare.Efternamn</p>
+                                <p>@användare.getÅlder() år</p>
+
+                            }
+                            @*SEDAN KAN MAN KLICKA PÅ PROFILBILDERNA OCH BEROENDE PÅ OM PROFILEN SOM ÄR AKTIV ÄR INLOGGAD OCH AKTIV SÅ SKER OLIKA SAKER 
+                                BEROENDE PÅ KONTOTS STATUS MED HJÄLP AV "IS AKTIV" OCH "IS INLOGGAD"*@
+                            @if (användare.Profilbild != null && AnvändareInloggadVerifeierare.isInloogad == true && AnvändareInloggadVerifeierare.användaren.IsActive == true)
+                            {
+                                var base64 = Convert.ToBase64String(användare.Profilbild);
+                                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+
+                                <a href='@Url.Action("AnotherUserPage", "Användare", new { username = användare.AnvändarNamn })'>
+                                    <img src='@imgsrc'
+                                         style="max-width:100px;max-height:100px" id="pic" />
+                                </a>
+                                <p id="profil">@användare.Förnamn @användare.Efternamn</p>
+                                <p>@användare.getÅlder() år</p>
+
+                            }
+
+                            @if (användare.Profilbild != null && AnvändareInloggadVerifeierare.isInloogad == true && AnvändareInloggadVerifeierare.användaren.IsActive == false)
+                            {
+                                var base64 = Convert.ToBase64String(användare.Profilbild);
+                                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+
+                                <a href='@Url.Action("InaktiveraAnvändare", "Användare")'>
+                                    <img src='@imgsrc'
+                                         style="max-width:100px;max-height:100px" id="pic" />
+                                </a>
+                                <p id="profil">@användare.Förnamn @användare.Efternamn</p>
+                                <p>@användare.getÅlder() år</p>
+                            }
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

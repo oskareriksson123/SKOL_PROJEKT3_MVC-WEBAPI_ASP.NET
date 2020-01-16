@@ -1,0 +1,271 @@
+﻿@model DejtApplication10._0.Models.MainViewModel
+@using DejtApplication10._0.Models
+@{
+    ViewBag.Title = "Besökare";
+}
+
+<h2>Välkommen till @Model.model.Förnamn @Model.model.Efternamn</h2>
+<br />
+<div class="UserPageInfo">
+
+    <div id="Info">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.model.Förnamn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.model.Förnamn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.model.Efternamn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.model.Efternamn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.model.AnvändarNamn)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.model.AnvändarNamn)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.model.Epost)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.model.Epost)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.model.Födelsedatum)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.model.Födelsedatum)
+            </dd>
+        </dl>
+
+
+        <div id="Profilbilden">
+
+            @if (Model.model.Profilbild != null)
+            {
+                var base64 = Convert.ToBase64String(Model.model.Profilbild);
+                var imgsrc = string.Format("data:image/jpg;base64,{0}", base64); 
+                <img src='@imgsrc'
+                     style="max-width:150px;max-height:150px" id="pic" />
+            }
+            <h4> Profilbild </h4>
+        </div>
+    </div>
+
+
+
+    <div id="VännersRubriker">
+        <h3 id="text"> @Model.model.Förnamn   vänner </h3>
+    </div>
+
+    @{
+        var inloggadesId = Model.model.ID;
+
+        var vänner = from användare in Model.allaAnvändare.Användare
+                     where användare.allaAnvändarensVänner.Any(vänn => vänn.VännensID == inloggadesId)
+                     select användare;
+        // Tar fram alla användarens vänner
+    }
+    <div id="ProfilensVänner">
+
+        
+
+        @foreach (var item in vänner)
+        {
+          // visar vännernas profilbild och namn
+            if (item.IsActive)
+            {
+                <div id="envänn">
+                    @{
+                        var base64 = Convert.ToBase64String(@item.Profilbild);
+                        var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                        <a href='@Url.Action("AnotherUserPage", "Användare", new { username = item.AnvändarNamn })'>
+                            <img src='@imgsrc'
+                                 style="max-width:150px;max-height:150px" id="pic" />
+                        </a>
+                        <p> @item.Förnamn @item.Efternamn</p>
+                    }
+                </div>
+            }
+
+        }
+
+    </div>
+
+    <nav id="knappar" onmouseover="document.getElementById('AlternativTillKontot').style.display = 'flex', document.getElementById('PilNed').style.display = 'none';" onmouseout="document.getElementById('AlternativTillKontot').style.display = 'none' , document.getElementById('PilNed').style.display = 'flex'; ">
+        <ul id="AlternativTillKontot">
+
+            <li><a id="BtnPassar">Passar vi ihop? </a> </li>
+            <li> <p id="SpanPassar"></p></li>
+        </ul>
+        <p id="PilNed"> < </p>
+    </nav>
+
+
+
+    <h2 id="text">Lämna ett medelande till @Model.model.Förnamn</h2>
+
+    <div id="Skicka_Medelanden">
+
+        <h4 class="Userpage">Skicka nytt meddelande</h4>
+        <form name="form1" id="form2">
+            <textarea name="meddelande" value="" rows="5" cols="35"></textarea>
+
+            <input id="inputUsername" type="text" name="inloggaUsername" value="@AnvändareInloggadVerifeierare.användaren.AnvändarNamn" />
+
+            <input id="inputUserpageID" type="text" name="userpageID" value="@Model.model.ID" />
+            <br />
+            <input type="button" id="Skicka" value="Skicka" />
+        </form>
+
+    </div>
+
+
+
+
+    <div id="inläggen">
+        <div id="flodesektion">
+            <h4 class="Userpage" id="text">Inlägg</h4>
+            <table style="width: 100%;">
+                <tbody id="flode">
+                </tbody>
+            </table>
+        </div>
+        <br />
+    </div>
+
+
+    </div>
+
+
+    @section scripts {
+
+        <script>
+        $(function () {
+
+            function loggaBesökare() { // Sparar besökaren 
+
+                var inloggadID = @AnvändareInloggadVerifeierare.användaren.ID;
+                var besökAnvändarID = @Model.model.ID;
+
+                $.ajax({
+                           type: "POST",
+                           method: 'post',
+                           url: '/api/VarApi/PostBesökare',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify([inloggadID, besökAnvändarID]),
+                            dataType: "json",
+
+                        success: function (result) {
+
+                        },
+
+                           error: function (result) {
+
+                            }
+                    });
+            }
+
+            // jämnför åldern med inloggade användaren mot den användaren man besöker och ser ifall man matchar
+            $("#BtnPassar").click(function () {
+                var resultat = @AnvändareInloggadVerifeierare.användaren.getÅlder() - @Model.model.getÅlder();
+                // Om man är 2 år yngre till 2 år äldre = match
+                if (resultat >= -2 	&& resultat <= 2) {
+                    $("#SpanPassar").text("Match!");
+                    $("#SpanPassar").css("color", "green");
+                }
+                else {
+                    $("#SpanPassar").text("Tyvärr inte!");
+                     $("#SpanPassar").css("color", "red");
+                }
+            });
+                    // Skickar det nya meddelandet till web api
+                  $("#Skicka").click(function () {
+                            
+                var dataform = new FormData(document.querySelector('#form2'))
+                var name1 = dataform.get("meddelande");
+                var name2 = name1[0];           // hämtar från meddelanderutan
+
+                if (name2 == ''|| name2 == null) { // kollar om den är tom eller inte
+                    alert('Ditt meddelande måste innehålla text.');
+                    return false;
+                } else {
+                   $.ajax({
+
+                            url: '/api/VarApi/Post',
+
+                            type: 'POST',
+
+                            method: 'Post',
+
+                            dataType: 'json',
+
+                            data: $('#form2').serialize(),
+
+                            success: function (data, textStatus, xhr) {
+
+                                console.log(data);
+                                update();
+                            },
+
+                            error: function (xhr, textStatus, errorThrown) {
+
+                                console.log(textStatus);
+
+                            }
+
+                        });
+                        update();
+                }
+
+                     
+                    });
+
+                function update() {
+                // Hämta användare från api
+
+                $.get('/api/VarApi/Get/', {id:@Model.model.ID}, function (allaMeddelanden) {
+                    $('#flode').text(''); // Rensa tabellen
+
+                    // Loopa igenom resultatet
+
+                    allaMeddelanden.forEach(function (meddelande) {
+                        var tr = $('<tr class="inlagg"></tr>');
+                        tr.append(
+                            '<div id="inlagg">'+
+                            '<td>' +
+                            '<p>Från <span class="Userpage">' + meddelande.InläggIfrånAnvändarnamn + '</span></p>' +
+                            '<p>' + meddelande.Meddelande + '</p>' +
+                            '</td>'+ '</div>'
+                        );
+                        $('#flode').append(tr);
+
+                    });
+                });
+                }
+                //uppdatera alla meddelanden
+                update();
+               //Logga besökaren
+               loggaBesökare();
+                });
+        </script>
+
+    }
+
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
